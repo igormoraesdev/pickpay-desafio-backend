@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { UsersRepository } from '../infra/users.repository';
+import { UsersRepository } from './users.repository';
 import { BadRequestException } from '@nestjs/common';
 import { hash } from 'argon2';
-import { USERS_REPOSITORY } from '../domain/user.repository.interface';
+import { USERS_REPOSITORY } from './user.repository.interface';
 
 jest.mock('argon2', () => ({
   hash: jest.fn(),

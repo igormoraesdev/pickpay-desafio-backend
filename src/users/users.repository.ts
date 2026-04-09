@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import * as schema from '../../infra/database/schema';
-import { users } from '../domain/users.entity';
+import * as schema from '../infra/database/schema';
+import { users } from './users.entity';
 import { eq, or } from 'drizzle-orm';
-import { DrizzleAsyncProvider } from '../../infra/database/drizzle.provider';
-import { IUsersRepository } from '../domain/user.repository.interface';
+import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
+import { IUsersRepository } from './user.repository.interface';
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {

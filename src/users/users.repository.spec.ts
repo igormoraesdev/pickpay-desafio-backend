@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from './users.repository';
-import { DatabaseModule } from '../../infra/database/database.module';
-import { DrizzleAsyncProvider } from '../../infra/database/drizzle.provider';
+import { DatabaseModule } from '../infra/database/database.module';
+import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
 
 describe('UsersRepository', () => {
   let repository: UsersRepository;

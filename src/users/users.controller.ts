@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { UsersService } from '../application/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UserDto } from '../dto/user.dto';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './create-user.dto';
 import { plainToInstance } from 'class-transformer';
+import { UserDto } from './user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
