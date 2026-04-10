@@ -5,6 +5,7 @@ import { users } from './users.entity';
 import { eq, or } from 'drizzle-orm';
 import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
 import { IUsersRepository } from './user.repository.interface';
+import { CreateUserDto } from './create-user.dto';
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -22,7 +23,7 @@ export class UsersRepository implements IUsersRepository {
       );
   }
 
-  async create(data: any) {
+  async create(data: CreateUserDto) {
     const [user] = await this.db
       .insert(users)
       .values(data)
