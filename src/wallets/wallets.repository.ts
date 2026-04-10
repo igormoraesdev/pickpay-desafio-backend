@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import * as schema from '../infra/database/schema';
 import { wallets } from './wallets.entity';
 import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
@@ -13,7 +13,7 @@ import { WalletDto } from './wallet.dto';
 export class WalletsRepository implements IWalletsRepository {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: BetterSQLite3Database<typeof schema>,
+    private readonly db: BunSQLiteDatabase<typeof schema>,
   ) { }
 
   async findById(id: number): Promise<WalletDto[]> {

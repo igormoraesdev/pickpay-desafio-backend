@@ -1,10 +1,10 @@
-FROM node:20-alpine
+FROM oven/bun:latest
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json bun.lock* ./
+RUN bun install
 
 EXPOSE 9090
 
-CMD ["sh", "-c", "yarn db:generate && yarn db:migrate && yarn start:dev"]
+CMD ["sh", "-c", "bun run db:generate && bun run db:migrate && bun run start:dev"]

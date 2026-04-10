@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import * as schema from '../infra/database/schema';
 import { users } from './users.entity';
 import { eq, or } from 'drizzle-orm';
@@ -11,7 +11,7 @@ import { CreateUserDto } from './create-user.dto';
 export class UsersRepository implements IUsersRepository {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: BetterSQLite3Database<typeof schema>,
+    private readonly db: BunSQLiteDatabase<typeof schema>,
   ) { }
 
   async findByEmailOrCpf(email: string, cpfCnpj: string) {

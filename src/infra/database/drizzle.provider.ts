@@ -1,11 +1,11 @@
-import Database from 'better-sqlite3';
-import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { Database } from 'bun:sqlite';
+import { drizzle, type BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import type { Provider } from '@nestjs/common';
 import * as schema from './schema';
 
 export const DrizzleAsyncProvider = 'drizzleProvider';
 
-export const DrizzleProvider: Provider<BetterSQLite3Database<typeof schema>>[] = [
+export const DrizzleProvider: Provider<BunSQLiteDatabase<typeof schema>>[] = [
   {
     provide: DrizzleAsyncProvider,
     useFactory: () => {

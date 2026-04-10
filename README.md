@@ -33,31 +33,45 @@ Content-Type: application/json
 
 ## Tecnologias
 
-- [NestJS](https://nestjs.com/) (Node.js + TypeScript)
+- [NestJS](https://nestjs.com/) (TypeScript)
+- [Bun](https://bun.sh/) (runtime)
+- [Drizzle ORM](https://orm.drizzle.team/) + SQLite
+- [Docker](https://www.docker.com/)
 
 ## Como Rodar
 
+### Com Docker (recomendado)
+
+```bash
+docker compose up
+```
+
+A aplicacao sobe em `http://localhost:9090` com hot-reload.
+
+### Sem Docker
+
 ```bash
 # instalar dependencias
-yarn install
+bun install
+
+# rodar migrations
+bun run db:generate
+bun run db:migrate
 
 # modo desenvolvimento
-yarn start:dev
+bun run start:dev
 
 # modo producao
-yarn build
-yarn start:prod
+bun run build
+bun run start:prod
 ```
 
 ## Testes
 
 ```bash
 # testes unitarios
-yarn test
-
-# testes e2e
-yarn test:e2e
+bun run test
 
 # cobertura de testes
-yarn test:cov
+bun run test:cov
 ```
