@@ -32,7 +32,6 @@ describe('UsersRepository', () => {
 
   it('should create a user', async () => {
     const user = await repository.create({
-      id: '1',
       name: 'Igor',
       email: 'igor@email.com',
       password: '123456',
@@ -46,7 +45,6 @@ describe('UsersRepository', () => {
 
   it('should find user by email or cpf', async () => {
     await repository.create({
-      id: '1',
       name: 'Igor',
       email: 'igor@email.com',
       password: '123456',

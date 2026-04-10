@@ -1,0 +1,22 @@
+POST http://localhost:9090/wallets
+content-type: application/json
+
+{
+  "balance": 1000,
+  "userId": 1
+}
+
+###
+
+GET http://localhost:9090/wallets/1
+content-type: application/json
+
+###
+
+PATCH http://localhost:9090/wallets/1
+content-type: application/json
+
+{
+  "balance": 1000,
+  "userId": 1
+}
