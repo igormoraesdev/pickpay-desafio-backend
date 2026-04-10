@@ -1,0 +1,10 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install
+
+EXPOSE 9090
+
+CMD ["sh", "-c", "yarn db:generate && yarn db:migrate && yarn start:dev"]
