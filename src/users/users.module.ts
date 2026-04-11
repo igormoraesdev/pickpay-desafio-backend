@@ -5,13 +5,15 @@ import { UsersRepository } from './users.repository';
 import { USERS_REPOSITORY } from './user.repository.interface';
 
 @Module({
-  controllers: [UsersController,],
+  controllers: [UsersController],
   providers: [
     UsersService,
     {
       provide: USERS_REPOSITORY,
-      useClass: UsersRepository
-    }
-    , UsersRepository],
+      useClass: UsersRepository,
+    },
+    UsersRepository,
+  ],
+  exports: [USERS_REPOSITORY],
 })
-export class UsersModule { }
+export class UsersModule {}

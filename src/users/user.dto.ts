@@ -1,10 +1,16 @@
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose } from 'class-transformer';
+import { IsEnum } from 'class-validator';
+
+export enum UserType {
+  PAYEE = 'payee',
+  PAYER = 'payer',
+}
 
 @Exclude()
 export class UserDto {
   @Expose()
   id: number;
-  
+
   @Expose()
   name: string;
 
@@ -14,6 +20,6 @@ export class UserDto {
   @Expose()
   email: string;
 
-  @Expose()
+  @IsEnum(UserType)
   type: string;
 }
