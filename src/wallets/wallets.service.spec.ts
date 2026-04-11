@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
@@ -9,9 +10,9 @@ describe('WalletsService', () => {
   let repository: WalletsRepository;
 
   const mockRepository = {
-    create: jest.fn(),
-    findById: jest.fn(),
-    update: jest.fn(),
+    create: mock(),
+    findById: mock(),
+    update: mock(),
   };
 
   beforeEach(async () => {
@@ -28,13 +29,15 @@ describe('WalletsService', () => {
     service = module.get<WalletsService>(WalletsService);
     repository = module.get(WALLETS_REPOSITORY);
 
-    jest.clearAllMocks();
+    mockRepository.create.mockReset();
+    mockRepository.findById.mockReset();
+    mockRepository.update.mockReset();
   });
 
   it('should create wallet successfully', async () => {
     const dto = {
       balance: 1000,
-      userId: 1
+      userId: 1,
     };
 
     mockRepository.findById.mockResolvedValue([]);
@@ -51,7 +54,7 @@ describe('WalletsService', () => {
   it('should update wallet successfully', async () => {
     const createWallet = {
       balance: 1000,
-      userId: 1
+      userId: 1,
     };
 
     mockRepository.findById.mockResolvedValue([]);
@@ -62,7 +65,7 @@ describe('WalletsService', () => {
 
     mockRepository.findById.mockResolvedValue([createWallet]);
 
-    createWallet.balance = 2000
+    createWallet.balance = 2000;
 
     mockRepository.update.mockResolvedValue(createWallet);
 
@@ -73,7 +76,6 @@ describe('WalletsService', () => {
     expect(repository.update).toHaveBeenCalled();
     expect(result.userId).toBe(createWallet.userId);
   });
-
 
   it('should throw if wallet already exists', async () => {
     mockRepository.findById.mockResolvedValue([{ id: '1' }]);

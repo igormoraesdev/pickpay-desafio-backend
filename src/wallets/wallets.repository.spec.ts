@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseModule } from '../infra/database/database.module';
 import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
@@ -43,9 +44,7 @@ describe('WalletsRepository', () => {
       userId: 1,
     });
 
-    const result = await repository.findById(
-      wallet.id
-    );
+    const result = await repository.findById(wallet.id);
 
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].userId).toBe(1);
@@ -60,9 +59,9 @@ describe('WalletsRepository', () => {
     const walletUpdate = {
       balance: 2000,
       userId: 1,
-    }
+    };
 
-    const result = await repository.update(walletUpdate)
+    const result = await repository.update(walletUpdate);
 
     expect(result).toBeDefined();
     expect(result.userId).toBe(1);
@@ -70,9 +69,7 @@ describe('WalletsRepository', () => {
   });
 
   it('should return empty if user not found', async () => {
-    const result = await repository.findById(
-      2
-    );
+    const result = await repository.findById(2);
 
     expect(result).toEqual([]);
   });

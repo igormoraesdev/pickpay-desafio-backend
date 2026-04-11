@@ -1,12 +1,14 @@
+import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
 
   const mockUsersService = {
-    registerUser: jest.fn(),
+    registerUser: mock(),
   };
 
   beforeEach(async () => {
@@ -23,7 +25,9 @@ describe('UsersController', () => {
     controller = module.get<UsersController>(UsersController);
     service = module.get<UsersService>(UsersService);
 
-  })
+    mockUsersService.registerUser.mockReset();
+  });
+
   it('should register a user', async () => {
     const dto = {
       name: 'Igor',
@@ -47,7 +51,7 @@ describe('UsersController', () => {
     expect(result).toMatchObject({
       name: dto.name,
       email: dto.email,
-      type: dto.type
-    })
+      type: dto.type,
+    });
   });
-})
+});

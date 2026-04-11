@@ -1,22 +1,22 @@
+import { describe, it, expect, beforeEach, mock, spyOn } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { UsersRepository } from './users.repository';
 import { BadRequestException } from '@nestjs/common';
-import { hash } from 'argon2';
 import { USERS_REPOSITORY } from './user.repository.interface';
 
-jest.mock('argon2', () => ({
-  hash: jest.fn(),
-}));
+import * as argon2 from 'argon2';
 
 describe('UsersService', () => {
   let service: UsersService;
   let repository: UsersRepository;
 
   const mockRepository = {
-    findByEmailOrCpf: jest.fn(),
-    create: jest.fn(),
+    findByEmailOrCpf: mock(),
+    create: mock(),
   };
+
+  let hashSpy: ReturnType<typeof spyOn>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,7 +32,10 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
     repository = module.get(USERS_REPOSITORY);
 
-    jest.clearAllMocks();
+    mockRepository.findByEmailOrCpf.mockReset();
+    mockRepository.create.mockReset();
+
+    hashSpy = spyOn(argon2, 'hash').mockResolvedValue('hashed-password' as never);
   });
 
   it('should create user successfully', async () => {
@@ -45,7 +48,6 @@ describe('UsersService', () => {
     };
 
     mockRepository.findByEmailOrCpf.mockResolvedValue([]);
-    (hash as jest.Mock).mockResolvedValue('hashed-password');
 
     mockRepository.create.mockResolvedValue({
       id: '1',
