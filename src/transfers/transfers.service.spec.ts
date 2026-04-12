@@ -5,13 +5,12 @@ import { TransfersService } from './transfers.service';
 import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
 import { WALLETS_REPOSITORY } from '../wallets/wallets.repository.interface';
 import { USERS_REPOSITORY } from '../users/user.repository.interface';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('TransfersService', () => {
   let service: TransfersService;
 
   const transfersRepository = {
-    markAsNotified: mock(),
-    findPendingNotifications: mock(),
     executeTransfer: mock(),
   };
   const walletsRepository = {
@@ -19,16 +18,16 @@ describe('TransfersService', () => {
   };
   const usersRepository = {
     findById: mock(),
-    create: mock(),
+  };
+  const notificationsService = {
+    notifyTransfer: mock(),
   };
 
   beforeEach(async () => {
-    transfersRepository.markAsNotified.mockReset();
-    transfersRepository.findPendingNotifications.mockReset();
     transfersRepository.executeTransfer.mockReset();
     walletsRepository.findByUserId.mockReset();
     usersRepository.findById.mockReset();
-    usersRepository.create.mockReset();
+    notificationsService.notifyTransfer.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -36,6 +35,7 @@ describe('TransfersService', () => {
         { provide: TRANSFERS_REPOSITORY, useValue: transfersRepository },
         { provide: WALLETS_REPOSITORY, useValue: walletsRepository },
         { provide: USERS_REPOSITORY, useValue: usersRepository },
+        { provide: NotificationsService, useValue: notificationsService },
       ],
     }).compile();
 
@@ -46,7 +46,7 @@ describe('TransfersService', () => {
   const payeeUser = { id: 2, name: 'Ana', email: 'ana@email.com', password: 'x', cpfCnpj: '222', type: 'payee' };
   const payerWallet = { id: 10, balance: 500, userId: 1 };
   const payeeWallet = { id: 20, balance: 100, userId: 2 };
-  const transferResult = { id: 99, value: 100, payer: 10, payee: 20, status: 'completed', notified: false };
+  const transferResult = { id: 99, value: 100, payer: 10, payee: 20, status: 'completed', notified: false, createdAt: '2026-04-12' };
   const transferDto = { payer: 1, payee: 2, value: 100 };
 
   const stubHappyPath = () => {
@@ -101,11 +101,11 @@ describe('TransfersService', () => {
     expect(result).toEqual(payerUser);
   });
 
-  it('should transfer and mark as notified on happy path', async () => {
+  it('should transfer and delegate notification on happy path', async () => {
     stubHappyPath();
-    const fetchMock = spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({ json: async () => ({ data: { authorization: true } }) } as Response)
-      .mockResolvedValueOnce({ ok: true } as Response);
+    const fetchMock = spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      json: async () => ({ data: { authorization: true } }),
+    } as Response);
 
     const result = await service.transfer(transferDto);
 
@@ -117,21 +117,7 @@ describe('TransfersService', () => {
       payeeNewBalance: payeeWallet.balance + transferDto.value,
       value: transferDto.value,
     });
-    expect(transfersRepository.markAsNotified).toHaveBeenCalledWith(transferResult.id);
-
-    fetchMock.mockRestore();
-  });
-
-  it('should not mark as notified when notification fails', async () => {
-    stubHappyPath();
-    const fetchMock = spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({ json: async () => ({ data: { authorization: true } }) } as Response)
-      .mockRejectedValueOnce(new Error('notify down'));
-
-    const result = await service.transfer(transferDto);
-
-    expect(result).toEqual(transferResult);
-    expect(transfersRepository.markAsNotified).not.toHaveBeenCalled();
+    expect(notificationsService.notifyTransfer).toHaveBeenCalledWith(transferResult.id, transferDto.payee);
 
     fetchMock.mockRestore();
   });
@@ -187,23 +173,6 @@ describe('TransfersService', () => {
     } as Response);
 
     await expect(service.transfer(transferDto)).rejects.toThrow(ForbiddenException);
-
-    fetchMock.mockRestore();
-  });
-
-  it('should retry pending notifications and mark only the successful ones', async () => {
-    transfersRepository.findPendingNotifications.mockResolvedValueOnce([
-      { id: 1, payee: 5 },
-      { id: 2, payee: 6 },
-    ]);
-    const fetchMock = spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({ ok: true } as Response)
-      .mockResolvedValueOnce({ ok: false } as Response);
-
-    await service.retryPendingNotifications();
-
-    expect(transfersRepository.markAsNotified).toHaveBeenCalledTimes(1);
-    expect(transfersRepository.markAsNotified).toHaveBeenCalledWith(1);
 
     fetchMock.mockRestore();
   });

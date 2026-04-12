@@ -1,5 +1,4 @@
-import { ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
 import { TransfersRepository } from './transfers.repository';
 import { WALLETS_REPOSITORY } from 'src/wallets/wallets.repository.interface';
@@ -11,11 +10,10 @@ import { AuthorizationDto } from './authorization.dto';
 import { UserDto } from 'src/users/user.dto';
 import { TransfersDto } from './transfers.dto';
 import { CreateTransfersDto } from './create-transfers.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class TransfersService {
-  private readonly logger = new Logger(TransfersService.name);
-
   constructor(
     @Inject(TRANSFERS_REPOSITORY)
     private readonly transfersRepository: TransfersRepository,
@@ -23,6 +21,7 @@ export class TransfersService {
     private readonly walletRepository: WalletsRepository,
     @Inject(USERS_REPOSITORY)
     private readonly userRepository: UsersRepository,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async fetchAuthorization(): Promise<AuthorizationDto> {
@@ -78,37 +77,7 @@ export class TransfersService {
       value,
     });
 
-    const notified = await this.sendNotification(payee);
-    if (notified) {
-      await this.transfersRepository.markAsNotified(transfer.id);
-      this.logger.log(`Notification sent for transfer #${transfer.id}`);
-    }
+    await this.notificationsService.notifyTransfer(transfer.id, payee);
     return transfer;
-  }
-
-  private async sendNotification(userId: number): Promise<boolean> {
-    try {
-      const response = await fetch('https://util.devi.tools/api/v1/notify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      });
-      return response.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async retryPendingNotifications() {
-    const pending = await this.transfersRepository.findPendingNotifications();
-    console.log('pending', pending);
-    for (const transfer of pending) {
-      const notified = await this.sendNotification(transfer.payee);
-      if (notified) {
-        await this.transfersRepository.markAsNotified(transfer.id);
-        this.logger.log(`Notification sent for transfer #${transfer.id}`);
-      }
-    }
   }
 }

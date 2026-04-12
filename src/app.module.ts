@@ -7,9 +7,10 @@ import { DatabaseModule } from './infra/database/database.module.js';
 import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { TransfersModule } from './transfers/transfers.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ScheduleModule.forRoot(), DatabaseModule, UsersModule, WalletsModule, TransfersModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ScheduleModule.forRoot(), DatabaseModule, UsersModule, WalletsModule, TransfersModule, NotificationsModule],
   controllers: [AppController],
   providers: [AppService],
 })
