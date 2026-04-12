@@ -5,7 +5,6 @@ import { TransfersService } from './transfers.service';
 import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
 import { WALLETS_REPOSITORY } from '../wallets/wallets.repository.interface';
 import { USERS_REPOSITORY } from '../users/user.repository.interface';
-import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
 
 describe('TransfersService', () => {
   let service: TransfersService;
@@ -13,6 +12,7 @@ describe('TransfersService', () => {
   const transfersRepository = {
     markAsNotified: mock(),
     findPendingNotifications: mock(),
+    executeTransfer: mock(),
   };
   const walletsRepository = {
     findByUserId: mock(),
@@ -21,17 +21,14 @@ describe('TransfersService', () => {
     findById: mock(),
     create: mock(),
   };
-  const db = {
-    transaction: mock(),
-  };
 
   beforeEach(async () => {
     transfersRepository.markAsNotified.mockReset();
     transfersRepository.findPendingNotifications.mockReset();
+    transfersRepository.executeTransfer.mockReset();
     walletsRepository.findByUserId.mockReset();
     usersRepository.findById.mockReset();
     usersRepository.create.mockReset();
-    db.transaction.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -39,7 +36,6 @@ describe('TransfersService', () => {
         { provide: TRANSFERS_REPOSITORY, useValue: transfersRepository },
         { provide: WALLETS_REPOSITORY, useValue: walletsRepository },
         { provide: USERS_REPOSITORY, useValue: usersRepository },
-        { provide: DrizzleAsyncProvider, useValue: db },
       ],
     }).compile();
 
@@ -53,19 +49,6 @@ describe('TransfersService', () => {
   const transferResult = { id: 99, value: 100, payer: 10, payee: 20, status: 'completed', notified: false };
   const transferDto = { payer: 1, payee: 2, value: 100 };
 
-  const stubTx = (result: typeof transferResult) => {
-    db.transaction.mockImplementationOnce(async (cb: any) => {
-      const tx: any = {};
-      tx.update = mock(() => tx);
-      tx.set = mock(() => tx);
-      tx.where = mock(async () => undefined);
-      tx.insert = mock(() => tx);
-      tx.values = mock(() => tx);
-      tx.returning = mock(async () => [result]);
-      return cb(tx);
-    });
-  };
-
   const stubHappyPath = () => {
     usersRepository.findById
       .mockResolvedValueOnce([payerUser])
@@ -73,7 +56,7 @@ describe('TransfersService', () => {
     walletsRepository.findByUserId
       .mockResolvedValueOnce([payerWallet])
       .mockResolvedValueOnce([payeeWallet]);
-    stubTx(transferResult);
+    transfersRepository.executeTransfer.mockResolvedValueOnce(transferResult);
   };
 
   it('should fetch authorization', async () => {
@@ -127,6 +110,13 @@ describe('TransfersService', () => {
     const result = await service.transfer(transferDto);
 
     expect(result).toEqual(transferResult);
+    expect(transfersRepository.executeTransfer).toHaveBeenCalledWith({
+      payerWalletId: payerWallet.id,
+      payeeWalletId: payeeWallet.id,
+      payerNewBalance: payerWallet.balance - transferDto.value,
+      payeeNewBalance: payeeWallet.balance + transferDto.value,
+      value: transferDto.value,
+    });
     expect(transfersRepository.markAsNotified).toHaveBeenCalledWith(transferResult.id);
 
     fetchMock.mockRestore();

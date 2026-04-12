@@ -9,13 +9,7 @@ import { UsersRepository } from 'src/users/users.repository';
 import { WalletDto } from 'src/wallets/wallet.dto';
 import { AuthorizationDto } from './authorization.dto';
 import { UserDto } from 'src/users/user.dto';
-import { DrizzleAsyncProvider } from 'src/infra/database/drizzle.provider';
-import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
-import * as dbSchema from 'src/infra/database/schema';
-import { wallets } from 'src/wallets/wallets.entity';
-import { transfers } from './transfers.entity';
-import { eq } from 'drizzle-orm';
-import { TransferStatus, TransfersDto } from './transfers.dto';
+import { TransfersDto } from './transfers.dto';
 import { CreateTransfersDto } from './create-transfers.dto';
 
 @Injectable()
@@ -29,8 +23,6 @@ export class TransfersService {
     private readonly walletRepository: WalletsRepository,
     @Inject(USERS_REPOSITORY)
     private readonly userRepository: UsersRepository,
-    @Inject(DrizzleAsyncProvider)
-    private readonly db: BunSQLiteDatabase<typeof dbSchema>,
   ) {}
 
   async fetchAuthorization(): Promise<AuthorizationDto> {
@@ -78,21 +70,12 @@ export class TransfersService {
       throw new ForbiddenException('Transfer failed, try again later');
     }
 
-    const payerBalanceUpdated = walletPayer.balance - value;
-    const payeeBalanceUpdated = walletPayee.balance + value;
-
-    const [transfer] = await this.db.transaction(async (tx) => {
-      await tx.update(wallets).set({ balance: payerBalanceUpdated }).where(eq(wallets.userId, payer));
-      await tx.update(wallets).set({ balance: payeeBalanceUpdated }).where(eq(wallets.userId, payee));
-      return tx
-        .insert(transfers)
-        .values({
-          value,
-          payer: walletPayer.id,
-          payee: walletPayee.id,
-          status: TransferStatus.COMPLETED,
-        })
-        .returning();
+    const transfer = await this.transfersRepository.executeTransfer({
+      payerWalletId: walletPayer.id,
+      payeeWalletId: walletPayee.id,
+      payerNewBalance: walletPayer.balance - value,
+      payeeNewBalance: walletPayee.balance + value,
+      value,
     });
 
     const notified = await this.sendNotification(payee);

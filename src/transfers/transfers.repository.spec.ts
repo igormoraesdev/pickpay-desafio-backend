@@ -1,22 +1,31 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseModule } from '../infra/database/database.module';
 import { createTestDb } from 'src/infra/database/testing';
 import { DrizzleAsyncProvider } from 'src/infra/database/drizzle.provider';
 import { TransfersRepository } from './transfers.repository';
+import { WalletsRepository } from '../wallets/wallets.repository';
+import { UsersRepository } from '../users/users.repository';
 
 describe('TransfersRepository', () => {
   let repository: TransfersRepository;
+  let walletsRepository: WalletsRepository;
+  let usersRepository: UsersRepository;
 
   beforeEach(async () => {
     const db = createTestDb();
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule],
-      providers: [TransfersRepository, { provide: DrizzleAsyncProvider, useValue: db }, TransfersRepository],
+      providers: [
+        TransfersRepository,
+        WalletsRepository,
+        UsersRepository,
+        { provide: DrizzleAsyncProvider, useValue: db },
+      ],
     }).compile();
 
     repository = module.get<TransfersRepository>(TransfersRepository);
+    walletsRepository = module.get<WalletsRepository>(WalletsRepository);
+    usersRepository = module.get<UsersRepository>(UsersRepository);
   });
 
   it('should create a transfer', async () => {
@@ -77,5 +86,43 @@ describe('TransfersRepository', () => {
     const [updateTransfer] = await repository.findById(transfer.id);
 
     expect(updateTransfer.notified).toBe(true);
+  });
+
+  it('should execute a transfer atomically', async () => {
+    const payer = await usersRepository.create({
+      name: 'Igor',
+      email: 'igor@email.com',
+      password: 'x',
+      cpfCnpj: '111',
+      type: 'payer',
+    });
+    const payee = await usersRepository.create({
+      name: 'Ana',
+      email: 'ana@email.com',
+      password: 'x',
+      cpfCnpj: '222',
+      type: 'payee',
+    });
+
+    const payerWallet = await walletsRepository.create({ userId: payer.id, balance: 500 });
+    const payeeWallet = await walletsRepository.create({ userId: payee.id, balance: 100 });
+
+    const transfer = await repository.executeTransfer({
+      payerWalletId: payerWallet.id,
+      payeeWalletId: payeeWallet.id,
+      payerNewBalance: 400,
+      payeeNewBalance: 200,
+      value: 100,
+    });
+
+    expect(transfer.value).toBe(100);
+    expect(transfer.payer).toBe(payerWallet.id);
+    expect(transfer.payee).toBe(payeeWallet.id);
+    expect(transfer.status).toBe('completed');
+
+    const [updatedPayer] = await walletsRepository.findById(payerWallet.id);
+    const [updatedPayee] = await walletsRepository.findById(payeeWallet.id);
+    expect(updatedPayer.balance).toBe(400);
+    expect(updatedPayee.balance).toBe(200);
   });
 });
