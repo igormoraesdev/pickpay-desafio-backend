@@ -98,6 +98,7 @@ export class TransfersService {
     const notified = await this.sendNotification(payee);
     if (notified) {
       await this.transfersRepository.markAsNotified(transfer.id);
+      this.logger.log(`Notification sent for transfer #${transfer.id}`);
     }
     return transfer;
   }
@@ -118,6 +119,7 @@ export class TransfersService {
   @Cron(CronExpression.EVERY_10_SECONDS)
   async retryPendingNotifications() {
     const pending = await this.transfersRepository.findPendingNotifications();
+    console.log('pending', pending);
     for (const transfer of pending) {
       const notified = await this.sendNotification(transfer.payee);
       if (notified) {
