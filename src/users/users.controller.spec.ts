@@ -49,9 +49,10 @@ describe('UsersController', () => {
 
     expect(service.registerUser).toHaveBeenCalledWith(dto);
     expect(result).toMatchObject({
+      id: '1',
+      cpfCnpj: dto.cpfCnpj,
       name: dto.name,
       email: dto.email,
-      type: dto.type,
     });
   });
 });

@@ -21,7 +21,7 @@ describe('UsersRepository', () => {
 
     await db.run(`
       CREATE TABLE users (
-        id TEXT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         email TEXT,
         password TEXT,
@@ -53,20 +53,28 @@ describe('UsersRepository', () => {
       type: 'payer',
     });
 
-    const result = await repository.findByEmailOrCpf(
-      'igor@email.com',
-      '123',
-    );
+    const result = await repository.findByEmailOrCpf('igor@email.com', '123');
 
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].email).toBe('igor@email.com');
   });
+  it('should find user by id', async () => {
+    const user = await repository.create({
+      name: 'Igor',
+      email: 'igor@email.com',
+      password: '123456',
+      cpfCnpj: '123',
+      type: 'payer',
+    });
+
+    const result = await repository.findById(user.id);
+
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0].id).toBe(user.id);
+  });
 
   it('should return empty if user not found', async () => {
-    const result = await repository.findByEmailOrCpf(
-      'naoexiste@email.com',
-      '000',
-    );
+    const result = await repository.findByEmailOrCpf('naoexiste@email.com', '000');
 
     expect(result).toEqual([]);
   });
