@@ -1,31 +1,25 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseModule } from '../infra/database/database.module';
-import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
 import { WalletsRepository } from './wallets.repository';
+import { createTestDb } from 'src/infra/database/testing';
+import { DrizzleAsyncProvider } from 'src/infra/database/drizzle.provider';
+import { UsersRepository } from 'src/users/users.repository';
 
 describe('WalletsRepository', () => {
   let repository: WalletsRepository;
-  let db: any;
+  let userRepository: UsersRepository;
 
   beforeEach(async () => {
+    const db = createTestDb();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [DatabaseModule],
-      providers: [WalletsRepository],
+      providers: [WalletsRepository, { provide: DrizzleAsyncProvider, useValue: db }, UsersRepository],
     }).compile();
 
     repository = module.get<WalletsRepository>(WalletsRepository);
-    db = module.get(DrizzleAsyncProvider);
-
-    await db.run(`DROP TABLE IF EXISTS wallets`);
-
-    await db.run(`
-      CREATE TABLE wallets (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        balance NUMERIC NOT NULL DEFAULT 0,
-        userId INTEGER NOT NULL
-      )
-    `);
+    userRepository = module.get<UsersRepository>(UsersRepository);
   });
 
   it('should create a wallet', async () => {
@@ -49,6 +43,25 @@ describe('WalletsRepository', () => {
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].userId).toBe(1);
   });
+  it('should find wallet by user id', async () => {
+    const user = await userRepository.create({
+      name: 'Igor',
+      email: 'igor@email.com',
+      password: '123456',
+      cpfCnpj: '123',
+      type: 'payer',
+    });
+
+    await repository.create({
+      balance: 1000,
+      userId: user.id,
+    });
+
+    const result = await repository.findByUserId(user.id);
+
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0].userId).toBe(user.id);
+  });
 
   it('should update a wallet', async () => {
     await repository.create({
@@ -69,7 +82,7 @@ describe('WalletsRepository', () => {
   });
 
   it('should return empty if user not found', async () => {
-    const result = await repository.findById(2);
+    const result = await repository.findById(100);
 
     expect(result).toEqual([]);
   });
