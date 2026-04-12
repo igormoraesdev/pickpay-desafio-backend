@@ -1,0 +1,8 @@
+POST http://localhost:9090/transfers
+content-type: application/json
+
+{
+  "value": 100.0,
+  "payer": 2,
+  "payee": 1
+}

@@ -24,6 +24,13 @@ export class WalletsRepository implements IWalletsRepository {
         eq(wallets.id, id))
   }
 
+  async findByUserId(userId: number): Promise<WalletDto[]> {
+    return this.db
+      .select()
+      .from(wallets)
+      .where(eq(wallets.userId, userId));
+  }
+
   async create(data: CreateWalletDto): Promise<WalletDto> {
     const [wallet] = await this.db
       .insert(wallets)

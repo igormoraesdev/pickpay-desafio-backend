@@ -4,6 +4,7 @@ import { WalletDto } from "./wallet.dto";
 
 export interface IWalletsRepository {
   findById(id: number): Promise<WalletDto[]>;
+  findByUserId(userId: number): Promise<WalletDto[]>;
   create(data: CreateWalletDto): Promise<WalletDto>;
   update(data: UpdateWalletDto): Promise<WalletDto>;
 }

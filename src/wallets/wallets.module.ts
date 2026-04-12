@@ -10,5 +10,6 @@ import { WalletsRepository } from './wallets.repository';
     provide: WALLETS_REPOSITORY,
     useClass: WalletsRepository
   }, WalletsRepository],
+  exports: [WALLETS_REPOSITORY],
 })
 export class WalletsModule { }
