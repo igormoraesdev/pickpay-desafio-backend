@@ -74,6 +74,8 @@ describe('TransfersRepository', () => {
 
     await repository.markAsNotified(transfer.id);
 
-    expect(transfer.notified).toBe(true);
+    const [updateTransfer] = await repository.findById(transfer.id);
+
+    expect(updateTransfer.notified).toBe(true);
   });
 });
