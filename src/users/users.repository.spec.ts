@@ -1,34 +1,23 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from './users.repository';
-import { DatabaseModule } from '../infra/database/database.module';
 import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
+import { createTestDb } from '../infra/database/testing';
 
 describe('UsersRepository', () => {
   let repository: UsersRepository;
-  let db: any;
 
   beforeEach(async () => {
+    const db = createTestDb();
+
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule],
-      providers: [UsersRepository],
+      providers: [
+        UsersRepository,
+        { provide: DrizzleAsyncProvider, useValue: db },
+      ],
     }).compile();
 
     repository = module.get<UsersRepository>(UsersRepository);
-    db = module.get(DrizzleAsyncProvider);
-
-    await db.run(`DROP TABLE IF EXISTS users`);
-
-    await db.run(`
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT,
-        password TEXT,
-        cpf_cnpj TEXT,
-        type TEXT
-      )
-    `);
   });
 
   it('should create a user', async () => {
@@ -58,6 +47,7 @@ describe('UsersRepository', () => {
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].email).toBe('igor@email.com');
   });
+
   it('should find user by id', async () => {
     const user = await repository.create({
       name: 'Igor',
