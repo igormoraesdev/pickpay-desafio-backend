@@ -3,6 +3,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { NotificationsClient } from './notifications.client';
 import { TRANSFERS_REPOSITORY } from '../transfers/transfers.repository.interface';
 import { TransfersRepository } from '../transfers/transfers.repository';
+import { WALLETS_REPOSITORY } from '../wallets/wallets.repository.interface';
+import { WalletsRepository } from '../wallets/wallets.repository';
 
 @Injectable()
 export class NotificationsService {
@@ -12,6 +14,8 @@ export class NotificationsService {
     private readonly client: NotificationsClient,
     @Inject(TRANSFERS_REPOSITORY)
     private readonly transfersRepository: TransfersRepository,
+    @Inject(WALLETS_REPOSITORY)
+    private readonly walletsRepository: WalletsRepository,
   ) {}
 
   async notifyTransfer(transferId: number, userId: number): Promise<void> {
@@ -26,7 +30,12 @@ export class NotificationsService {
   async retryPendingNotifications(): Promise<void> {
     const pending = await this.transfersRepository.findPendingNotifications();
     for (const transfer of pending) {
-      await this.notifyTransfer(transfer.id, transfer.payee);
+      const [wallet] = await this.walletsRepository.findById(transfer.payee);
+      if (!wallet) {
+        this.logger.warn(`Wallet #${transfer.payee} not found for transfer #${transfer.id}`);
+        continue;
+      }
+      await this.notifyTransfer(transfer.id, wallet.userId);
     }
   }
 }
