@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './create-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from './user.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Public } from '@auth/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {

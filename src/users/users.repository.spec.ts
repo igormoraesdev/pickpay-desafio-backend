@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from './users.repository';
-import { DrizzleAsyncProvider } from '../infra/database/drizzle.provider';
-import { createTestDb } from '../infra/database/testing';
+import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
+import { createTestDb } from '@infra/database/testing';
 
 describe('UsersRepository', () => {
   let repository: UsersRepository;

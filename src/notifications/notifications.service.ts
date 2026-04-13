@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { NotificationsClient } from './notifications.client';
-import { TRANSFERS_REPOSITORY } from '../transfers/transfers.repository.interface';
-import { TransfersRepository } from '../transfers/transfers.repository';
-import { WALLETS_REPOSITORY } from '../wallets/wallets.repository.interface';
-import { WalletsRepository } from '../wallets/wallets.repository';
+import { TRANSFERS_REPOSITORY } from '@transfers/transfers.repository.interface';
+import { TransfersRepository } from '@transfers/transfers.repository';
+import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
+import { WalletsRepository } from '@wallets/wallets.repository';
 
 @Injectable()
 export class NotificationsService {

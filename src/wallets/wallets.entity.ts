@@ -1,5 +1,5 @@
 import { sqliteTable, integer, numeric } from 'drizzle-orm/sqlite-core';
-import { users } from '../users/users.entity';
+import { users } from '@users/users.entity';
 
 export const wallets = sqliteTable('wallets', {
   id: integer('id').primaryKey({ autoIncrement: true }),

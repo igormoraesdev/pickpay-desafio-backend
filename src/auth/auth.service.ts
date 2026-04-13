@@ -1,9 +1,9 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { USERS_REPOSITORY } from 'src/users/user.repository.interface';
-import { UsersRepository } from 'src/users/users.repository';
+import { USERS_REPOSITORY } from '@users/user.repository.interface';
+import { UsersRepository } from '@users/users.repository';
 import { verify } from 'argon2';
-import { UserDto } from 'src/users/user.dto';
+import { UserDto } from '@users/user.dto';
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 

@@ -1,16 +1,16 @@
 import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
 import { TransfersRepository } from './transfers.repository';
-import { WALLETS_REPOSITORY } from 'src/wallets/wallets.repository.interface';
-import { WalletsRepository } from 'src/wallets/wallets.repository';
-import { USERS_REPOSITORY } from 'src/users/user.repository.interface';
-import { UsersRepository } from 'src/users/users.repository';
-import { WalletDto } from 'src/wallets/wallet.dto';
+import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
+import { WalletsRepository } from '@wallets/wallets.repository';
+import { USERS_REPOSITORY } from '@users/user.repository.interface';
+import { UsersRepository } from '@users/users.repository';
+import { WalletDto } from '@wallets/wallet.dto';
 import { AuthorizationDto } from './authorization.dto';
-import { UserDto } from 'src/users/user.dto';
+import { UserDto } from '@users/user.dto';
 import { TransfersDto } from './transfers.dto';
 import { CreateTransfersDto } from './create-transfers.dto';
-import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationsService } from '@notifications/notifications.service';
 
 @Injectable()
 export class TransfersService {

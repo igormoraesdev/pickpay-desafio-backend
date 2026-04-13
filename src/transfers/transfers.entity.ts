@@ -1,5 +1,5 @@
 import { sqliteTable, integer, numeric, text } from 'drizzle-orm/sqlite-core';
-import { wallets } from '../wallets/wallets.entity';
+import { wallets } from '@wallets/wallets.entity';
 import { sql } from 'drizzle-orm';
 
 export const transfers = sqliteTable('transfers', {

@@ -14,6 +14,14 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@auth/*": ["src/auth/*"],
+      "@users/*": ["src/users/*"],
+      "@wallets/*": ["src/wallets/*"],
+      "@transfers/*": ["src/transfers/*"],
+      "@notifications/*": ["src/notifications/*"],
+      "@infra/*": ["src/infra/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
 import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
-import { WALLETS_REPOSITORY } from '../wallets/wallets.repository.interface';
-import { USERS_REPOSITORY } from '../users/user.repository.interface';
-import { NotificationsService } from '../notifications/notifications.service';
+import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
+import { USERS_REPOSITORY } from '@users/user.repository.interface';
+import { NotificationsService } from '@notifications/notifications.service';
 
 describe('TransfersService', () => {
   let service: TransfersService;
@@ -46,16 +46,20 @@ describe('TransfersService', () => {
   const payeeUser = { id: 2, name: 'Ana', email: 'ana@email.com', password: 'x', cpfCnpj: '222', type: 'payee' };
   const payerWallet = { id: 10, balance: 500, userId: 1 };
   const payeeWallet = { id: 20, balance: 100, userId: 2 };
-  const transferResult = { id: 99, value: 100, payer: 10, payee: 20, status: 'completed', notified: false, createdAt: '2026-04-12' };
+  const transferResult = {
+    id: 99,
+    value: 100,
+    payer: 10,
+    payee: 20,
+    status: 'completed',
+    notified: false,
+    createdAt: '2026-04-12',
+  };
   const transferDto = { payer: 1, payee: 2, value: 100 };
 
   const stubHappyPath = () => {
-    usersRepository.findById
-      .mockResolvedValueOnce([payerUser])
-      .mockResolvedValueOnce([payeeUser]);
-    walletsRepository.findByUserId
-      .mockResolvedValueOnce([payerWallet])
-      .mockResolvedValueOnce([payeeWallet]);
+    usersRepository.findById.mockResolvedValueOnce([payerUser]).mockResolvedValueOnce([payeeUser]);
+    walletsRepository.findByUserId.mockResolvedValueOnce([payerWallet]).mockResolvedValueOnce([payeeWallet]);
     transfersRepository.executeTransfer.mockResolvedValueOnce(transferResult);
   };
 
@@ -123,23 +127,15 @@ describe('TransfersService', () => {
   });
 
   it('should throw NotFoundException when payer or payee not found', async () => {
-    usersRepository.findById
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([payeeUser]);
-    walletsRepository.findByUserId
-      .mockResolvedValueOnce([payerWallet])
-      .mockResolvedValueOnce([payeeWallet]);
+    usersRepository.findById.mockResolvedValueOnce([]).mockResolvedValueOnce([payeeUser]);
+    walletsRepository.findByUserId.mockResolvedValueOnce([payerWallet]).mockResolvedValueOnce([payeeWallet]);
 
     await expect(service.transfer(transferDto)).rejects.toThrow(NotFoundException);
   });
 
   it('should throw NotFoundException when wallet not found', async () => {
-    usersRepository.findById
-      .mockResolvedValueOnce([payerUser])
-      .mockResolvedValueOnce([payeeUser]);
-    walletsRepository.findByUserId
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([payeeWallet]);
+    usersRepository.findById.mockResolvedValueOnce([payerUser]).mockResolvedValueOnce([payeeUser]);
+    walletsRepository.findByUserId.mockResolvedValueOnce([]).mockResolvedValueOnce([payeeWallet]);
 
     await expect(service.transfer(transferDto)).rejects.toThrow(NotFoundException);
   });
@@ -148,17 +144,13 @@ describe('TransfersService', () => {
     usersRepository.findById
       .mockResolvedValueOnce([{ ...payerUser, type: 'payee' }])
       .mockResolvedValueOnce([payeeUser]);
-    walletsRepository.findByUserId
-      .mockResolvedValueOnce([payerWallet])
-      .mockResolvedValueOnce([payeeWallet]);
+    walletsRepository.findByUserId.mockResolvedValueOnce([payerWallet]).mockResolvedValueOnce([payeeWallet]);
 
     await expect(service.transfer(transferDto)).rejects.toThrow(ForbiddenException);
   });
 
   it('should throw ForbiddenException when balance is insufficient', async () => {
-    usersRepository.findById
-      .mockResolvedValueOnce([payerUser])
-      .mockResolvedValueOnce([payeeUser]);
+    usersRepository.findById.mockResolvedValueOnce([payerUser]).mockResolvedValueOnce([payeeUser]);
     walletsRepository.findByUserId
       .mockResolvedValueOnce([{ ...payerWallet, balance: 10 }])
       .mockResolvedValueOnce([payeeWallet]);

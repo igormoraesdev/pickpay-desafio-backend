@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
-import { createTestDb } from 'src/infra/database/testing';
-import { DrizzleAsyncProvider } from 'src/infra/database/drizzle.provider';
+import { createTestDb } from '@infra/database/testing';
+import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
 import { TransfersRepository } from './transfers.repository';
-import { WalletsRepository } from '../wallets/wallets.repository';
-import { UsersRepository } from '../users/users.repository';
+import { WalletsRepository } from '@wallets/wallets.repository';
+import { UsersRepository } from '@users/users.repository';
 
 describe('TransfersRepository', () => {
   let repository: TransfersRepository;
