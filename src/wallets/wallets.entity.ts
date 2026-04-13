@@ -6,5 +6,3 @@ export const wallets = sqliteTable('wallets', {
   balance: numeric('balance', { mode: 'number' }).notNull().default(0),
   userId: integer().notNull().references(() => users.id),
 })
-
-export type Wallets = typeof wallets.$inferSelect;

@@ -19,5 +19,3 @@ export const transfers = sqliteTable('transfers', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
-
-export type Transfer = typeof transfers.$inferSelect;

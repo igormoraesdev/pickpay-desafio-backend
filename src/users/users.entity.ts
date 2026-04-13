@@ -10,5 +10,3 @@ export const users = sqliteTable('users', {
     .notNull()
     .default('payee'),
 });
-
-export type User = typeof users.$inferSelect;
