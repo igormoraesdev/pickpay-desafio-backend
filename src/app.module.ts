@@ -8,9 +8,19 @@ import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ScheduleModule.forRoot(), DatabaseModule, UsersModule, WalletsModule, TransfersModule, NotificationsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
+    DatabaseModule,
+    UsersModule,
+    WalletsModule,
+    TransfersModule,
+    NotificationsModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -3,15 +3,17 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './create-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from './user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
     const user = await this.usersService.registerUser(createUserDto);
-    return plainToInstance(UserDto, user)
+    return plainToInstance(UserDto, user);
   }
 }

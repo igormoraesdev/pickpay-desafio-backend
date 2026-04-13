@@ -19,11 +19,11 @@ export class UsersRepository implements IUsersRepository {
     return this.db.select().from(users).where(eq(users.id, id));
   }
 
-  async findByEmailOrCpf(email: string, cpfCnpj: string) {
+  async findByEmailOrCpf(email: string, cpfCnpj?: string) {
     return this.db
       .select()
       .from(users)
-      .where(or(eq(users.email, email), eq(users.cpfCnpj, cpfCnpj)));
+      .where(or(eq(users.email, email), eq(users.cpfCnpj, cpfCnpj ?? '')));
   }
 
   async create(data: CreateUserDto) {
