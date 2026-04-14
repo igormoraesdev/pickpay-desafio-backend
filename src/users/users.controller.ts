@@ -1,8 +1,8 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
-import { UserDto } from './user.dto';
+import { UserDto } from './dto/user.dto';
 import { Public } from '@auth/decorators/public.decorator';
 
 @Controller('users')

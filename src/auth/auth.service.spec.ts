@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { USERS_REPOSITORY } from '@users/user.repository.interface';
+import { USERS_REPOSITORY } from '@users/repositories/user.repository.interface';
 import { JwtService } from '@nestjs/jwt';
 import { hash } from 'argon2';
 import { UnauthorizedException } from '@nestjs/common';

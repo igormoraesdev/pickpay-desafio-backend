@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import * as schema from '@infra/database/schema';
-import { users } from './users.entity';
+import { users } from '../entities/users.entity';
 import { eq, or } from 'drizzle-orm';
 import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
 import { IUsersRepository } from './user.repository.interface';
-import { CreateUserDto } from './create-user.dto';
-import { UserDto } from './user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UserDto } from '../dto/user.dto';
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {

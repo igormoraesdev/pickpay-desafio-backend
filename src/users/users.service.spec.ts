@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, mock, spyOn } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { UsersRepository } from './users.repository';
+import { UsersRepository } from './repositories/users.repository';
 import { BadRequestException } from '@nestjs/common';
-import { USERS_REPOSITORY } from './user.repository.interface';
+import { USERS_REPOSITORY } from './repositories/user.repository.interface';
 
 import * as argon2 from 'argon2';
 

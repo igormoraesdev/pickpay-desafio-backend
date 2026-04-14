@@ -1,8 +1,8 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { hash } from 'argon2';
-import { UsersRepository } from './users.repository';
-import { USERS_REPOSITORY } from './user.repository.interface';
+import { UsersRepository } from './repositories/users.repository';
+import { USERS_REPOSITORY } from './repositories/user.repository.interface';
 
 @Injectable()
 export class UsersService {
