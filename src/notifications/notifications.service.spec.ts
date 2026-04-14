@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationsService } from './notifications.service';
-import { NotificationsClient } from './notifications.client';
-import { TRANSFERS_REPOSITORY } from '@transfers/transfers.repository.interface';
-import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
+import { NotificationsClient } from './clients/notifications.client';
+import { TRANSFERS_REPOSITORY } from '@transfers/repositories/transfers.repository.interface';
+import { WALLETS_REPOSITORY } from '@wallets/repositories/wallets.repository.interface';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
