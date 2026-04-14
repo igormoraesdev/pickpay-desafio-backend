@@ -1,9 +1,9 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { WALLETS_REPOSITORY } from './wallets.repository.interface';
-import { WalletsRepository } from './wallets.repository';
-import { CreateWalletDto } from './create-wallet.dto';
-import { WalletDto } from './wallet.dto';
-import { UpdateWalletDto } from './update-wallet.dto';
+import { WALLETS_REPOSITORY } from './repositories/wallets.repository.interface';
+import { WalletsRepository } from './repositories/wallets.repository';
+import { CreateWalletDto } from './dto/create-wallet.dto';
+import { WalletDto } from './dto/wallet.dto';
+import { UpdateWalletDto } from './dto/update-wallet.dto';
 
 @Injectable()
 export class WalletsService {

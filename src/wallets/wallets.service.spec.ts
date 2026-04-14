@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
-import { WalletsRepository } from './wallets.repository';
-import { WALLETS_REPOSITORY } from './wallets.repository.interface';
+import { WalletsRepository } from './repositories/wallets.repository';
+import { WALLETS_REPOSITORY } from './repositories/wallets.repository.interface';
 
 describe('WalletsService', () => {
   let service: WalletsService;

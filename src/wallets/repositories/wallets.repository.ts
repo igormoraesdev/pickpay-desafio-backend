@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import * as schema from '@infra/database/schema';
-import { wallets } from './wallets.entity';
+import { wallets } from '../entities/wallets.entity';
 import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
 import { IWalletsRepository } from './wallets.repository.interface';
-import { CreateWalletDto } from './create-wallet.dto';
+import { CreateWalletDto } from '../dto/create-wallet.dto';
 import { eq } from 'drizzle-orm';
-import { UpdateWalletDto } from './update-wallet.dto';
-import { WalletDto } from './wallet.dto';
+import { UpdateWalletDto } from '../dto/update-wallet.dto';
+import { WalletDto } from '../dto/wallet.dto';
 
 @Injectable()
 export class WalletsRepository implements IWalletsRepository {

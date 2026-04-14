@@ -1,6 +1,6 @@
-import { CreateWalletDto } from "./create-wallet.dto";
-import { UpdateWalletDto } from "./update-wallet.dto";
-import { WalletDto } from "./wallet.dto";
+import { CreateWalletDto } from "../dto/create-wallet.dto";
+import { UpdateWalletDto } from "../dto/update-wallet.dto";
+import { WalletDto } from "../dto/wallet.dto";
 
 export interface IWalletsRepository {
   findById(id: number): Promise<WalletDto[]>;

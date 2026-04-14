@@ -1,3 +1,3 @@
-export { users } from '@users/users.entity';
-export { wallets } from '@wallets/wallets.entity';
-export { transfers } from '@transfers/transfers.entity';
+export { users } from '@users/entities/users.entity';
+export { wallets } from '@wallets/entities/wallets.entity';
+export { transfers } from '@transfers/entities/transfers.entity';

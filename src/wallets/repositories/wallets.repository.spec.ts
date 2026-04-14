@@ -4,7 +4,7 @@ import { DatabaseModule } from '@infra/database/database.module';
 import { WalletsRepository } from './wallets.repository';
 import { createTestDb } from '@infra/database/testing';
 import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
-import { UsersRepository } from '@users/users.repository';
+import { UsersRepository } from '@users/repositories/users.repository';
 
 describe('WalletsRepository', () => {
   let repository: WalletsRepository;

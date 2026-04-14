@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { WalletsController } from './wallets.controller';
-import { WALLETS_REPOSITORY } from './wallets.repository.interface';
-import { WalletsRepository } from './wallets.repository';
+import { WALLETS_REPOSITORY } from './repositories/wallets.repository.interface';
+import { WalletsRepository } from './repositories/wallets.repository';
 
 @Module({
   controllers: [WalletsController],
