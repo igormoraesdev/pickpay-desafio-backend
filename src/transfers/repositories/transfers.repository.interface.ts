@@ -1,5 +1,5 @@
-import { CreateTransfersDto } from './create-transfers.dto';
-import { TransfersDto } from './transfers.dto';
+import { CreateTransfersDto } from '../dto/create-transfers.dto';
+import { TransfersDto } from '../dto/transfers.dto';
 
 export interface ExecuteTransferInput {
   payerWalletId: number;

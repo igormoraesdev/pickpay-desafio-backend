@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach, mock, spyOn } from 'bun:test';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
-import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
-import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
-import { USERS_REPOSITORY } from '@users/user.repository.interface';
+import { TRANSFERS_REPOSITORY } from './repositories/transfers.repository.interface';
+import { WALLETS_REPOSITORY } from '@wallets/repositories/wallets.repository.interface';
+import { USERS_REPOSITORY } from '@users/repositories/user.repository.interface';
 import { NotificationsService } from '@notifications/notifications.service';
 
 describe('TransfersService', () => {

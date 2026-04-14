@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
-import { CreateTransfersDto } from './create-transfers.dto';
-import { TransfersDto } from './transfers.dto';
+import { CreateTransfersDto } from './dto/create-transfers.dto';
+import { TransfersDto } from './dto/transfers.dto';
 
 @Controller('transfers')
 export class TransfersController {

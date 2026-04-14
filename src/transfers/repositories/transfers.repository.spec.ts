@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createTestDb } from '@infra/database/testing';
 import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
 import { TransfersRepository } from './transfers.repository';
-import { WalletsRepository } from '@wallets/wallets.repository';
-import { UsersRepository } from '@users/users.repository';
+import { WalletsRepository } from '@wallets/repositories/wallets.repository';
+import { UsersRepository } from '@users/repositories/users.repository';
 
 describe('TransfersRepository', () => {
   let repository: TransfersRepository;

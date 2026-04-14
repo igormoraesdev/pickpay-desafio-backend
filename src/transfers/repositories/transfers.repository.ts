@@ -3,10 +3,10 @@ import { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite';
 import * as schema from '@infra/database/schema';
 import { DrizzleAsyncProvider } from '@infra/database/drizzle.provider';
 import { ExecuteTransferInput, ITransfersRepository } from './transfers.repository.interface';
-import { CreateTransfersDto } from './create-transfers.dto';
-import { TransferStatus, TransfersDto } from './transfers.dto';
-import { transfers } from './transfers.entity';
-import { wallets } from '@wallets/wallets.entity';
+import { CreateTransfersDto } from '../dto/create-transfers.dto';
+import { TransferStatus, TransfersDto } from '../dto/transfers.dto';
+import { transfers } from '../entities/transfers.entity';
+import { wallets } from '@wallets/entities/wallets.entity';
 import { eq } from 'drizzle-orm';
 
 @Injectable()

@@ -1,15 +1,15 @@
 import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { TRANSFERS_REPOSITORY } from './transfers.repository.interface';
-import { TransfersRepository } from './transfers.repository';
-import { WALLETS_REPOSITORY } from '@wallets/wallets.repository.interface';
-import { WalletsRepository } from '@wallets/wallets.repository';
-import { USERS_REPOSITORY } from '@users/user.repository.interface';
-import { UsersRepository } from '@users/users.repository';
-import { WalletDto } from '@wallets/wallet.dto';
-import { AuthorizationDto } from './authorization.dto';
-import { UserDto } from '@users/user.dto';
-import { TransfersDto } from './transfers.dto';
-import { CreateTransfersDto } from './create-transfers.dto';
+import { TRANSFERS_REPOSITORY } from './repositories/transfers.repository.interface';
+import { TransfersRepository } from './repositories/transfers.repository';
+import { WALLETS_REPOSITORY } from '@wallets/repositories/wallets.repository.interface';
+import { WalletsRepository } from '@wallets/repositories/wallets.repository';
+import { USERS_REPOSITORY } from '@users/repositories/user.repository.interface';
+import { UsersRepository } from '@users/repositories/users.repository';
+import { WalletDto } from '@wallets/dto/wallet.dto';
+import { AuthorizationDto } from './dto/authorization.dto';
+import { UserDto } from '@users/dto/user.dto';
+import { TransfersDto } from './dto/transfers.dto';
+import { CreateTransfersDto } from './dto/create-transfers.dto';
 import { NotificationsService } from '@notifications/notifications.service';
 
 @Injectable()
